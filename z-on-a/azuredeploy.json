@@ -32,7 +32,7 @@
     },
     "dnsNameForPublicIP": {
       "type": "string",
-      "defaultValue": "testzimbra09",
+      "defaultValue": "testzimbra10",
       "metadata": {
         "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
       }
@@ -167,7 +167,11 @@
             "publisher": "[variables('imagePublisher')]",
             "offer": "[variables('imageOffer')]",
             "sku": "[variables('ubuntuOSVersion')]",
-            "version": "latest"
+            "version": "latest",
+            "managedDisk": {
+              "storageAccountType": "Premium_LRS"
+            },
+            "diskSizeGB": "16"
           },
           "osDisk": {
             "caching": "ReadWrite",
