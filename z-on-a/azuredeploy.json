@@ -4,12 +4,13 @@
   "parameters": {
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_D2",
+      "defaultValue": "Standard_D2s_v3",
       "allowedValues": [
         "Standard_A2",
         "Standard_A3",
         "Standard_D2",
         "Standard_D3",
+        "Standard_D2s_v3"
       ],
       "metadata": {
         "description": "Size of vm"
