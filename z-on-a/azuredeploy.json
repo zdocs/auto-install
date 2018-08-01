@@ -167,11 +167,7 @@
             "publisher": "[variables('imagePublisher')]",
             "offer": "[variables('imageOffer')]",
             "sku": "[variables('ubuntuOSVersion')]",
-            "version": "latest",
-            "managedDisk": {
-              "storageAccountType": "Premium_LRS"
-            },
-            "diskSizeGB": "16"
+            "version": "latest"
           },
           "osDisk": {
             "caching": "ReadWrite",
