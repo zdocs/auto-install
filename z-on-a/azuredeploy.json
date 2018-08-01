@@ -199,9 +199,7 @@
             "https://raw.githubusercontent.com/zdocs/auto-install/master/z-on-a/scripts/hello.sh"
           ]
         },
-        "protectedSettings": {
-          "commandToExecute": "[concat('sh hello.sh ')]"
-        }
+        "commandToExecute": "[concat('sh hello.sh ')]"
       }
     }
   ]
