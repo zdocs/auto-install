@@ -4,7 +4,7 @@
   "parameters": {
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_A2",
+      "defaultValue": "Standard_D2",
       "allowedValues": [
         "Standard_A2",
         "Standard_A3",
@@ -199,9 +199,7 @@
             "[variables('installScriptUri')]"
           ]
         },
-        "protectedSettings": {
           "commandToExecute": "[variables('installCommand')]"
-        }
       }
     }
   ]
