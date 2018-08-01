@@ -4,6 +4,7 @@
   "parameters": {
     "vmSize": {
       "type": "string",
+      "defaultValue": "Standard_A2",
       "allowedValues": [
         "Standard_A1",
         "Standard_A2",
@@ -20,18 +21,21 @@
     },
     "username": {
       "type": "string",
+      "defaultValue": "azureuser",
       "metadata": {
         "description": "Username for the Virtual Machine."
       }
     },
     "password": {
       "type": "securestring",
+      "defaultValue": "Zimbra@123456",
       "metadata": {
         "description": "Password for the Virtual Machine."
       }
     },
     "dnsNameForPublicIP": {
       "type": "string",
+      "defaultValue": "testzimbra03",
       "metadata": {
         "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
       }
@@ -68,7 +72,7 @@
     "scenarioPrefix": "customscriptLinux",
     "imagePublisher": "Canonical",
     "imageOffer": "UbuntuServer",
-    "ubuntuOSVersion": "14.04.2-LTS",
+    "ubuntuOSVersion": "16.04-LTS",
     "nicName": "[concat(variables('scenarioPrefix'),'Nic')]",
     "vnetAddressPrefix": "10.0.0.0/16",
     "subnetName": "[concat(variables('scenarioPrefix'),'Subnet')]",
@@ -192,7 +196,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), '/scripts/hello.sh')]"
+            "[concat(parameters('_artifactsLocation'), '/scripts/hello.sh >> /tmp/hello.txt')]"
           ],
           "commandToExecute": "[parameters('commandToExecute')]"
         }
