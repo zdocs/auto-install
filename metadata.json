@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Deploy Zimbra (Network Edition) on Ubuntu.",
+  "description": "This template uses the Azure Linux CustomScript extension to deploy a Zimbra on Ubuntu. It creates an Ubuntu VM (16.04), does a silent install of Zimbra Network Edition 8.8.9 with a trial license.",
+  "summary": "Deploy a Zimbra (Network Edition) on Ubuntu.",
+  "githubUsername": "zdocs",
+  "dateUpdated": "2018-08-01"
+}
