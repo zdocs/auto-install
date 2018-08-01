@@ -6,29 +6,29 @@ DOMAIN="mail.lab"
 HOSTNAME="zimbra.mail.lab"
 
 # Reset the hosts file
-echo "\e[38;5;87mFixing the hosts file."
+echo -e "\e[38;5;87mFixing the hosts file."
 echo -e "\e[38;5;82m ... create a copy of the old hosts file."
-sudo mv /etc/hosts{,.old}
+mv /etc/hosts /etc/hosts.old
 
 echo -e "\e[38;5;82m ... write a new hosts file."
 printf '127.0.0.1\tlocalhost.localdomain\tlocalhost\n127.0.1.1\tubuntu\n'$MYIP'\t'$HOSTNAME'\tzimbra\t'$(hostname) | sudo tee -a /etc/hosts >/dev/null 2>&1
 
-echo "\e[38;5;87mSetting hostname to $HOSTNAME."
+echo -e "\e[38;5;87mSetting hostname to $HOSTNAME."
 hostnamectl set-hostname $HOSTNAME >/dev/null 2>&1
 
-echo "\e[38;5;87mSetting timezone to Singapore."
+echo -e "\e[38;5;87mSetting timezone to Singapore."
 timedatectl set-timezone Asia/Singapore >/dev/null 2>&1
 #timedatectl set-timezone Asia/Bangkok >/dev/null 2>&1
 #timedatectl set-timezone Asia/Yangon >/dev/null 2>&1
 
-echo "\e[38;5;87mUpdate package repo."
+echo -e "\e[38;5;87mUpdate package repo."
 apt-get -qq update
 
 #Install a DNS Server
-echo "\e[38;5;87mInstalling dnsmasq DNS Server"
+echo -e "\e[38;5;87mInstalling dnsmasq DNS Server"
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq -y dnsmasq < /dev/null > /dev/null
 echo -e "\e[38;5;82m ... Configuring DNS Server (/etc/dnsmasq.conf)"
-sudo mv /etc/dnsmasq.conf{,.old}
+sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.old
 #create the conf file
 printf 'server=8.8.8.8\nlisten-address=127.0.0.1\ndomain='$DOMAIN'\nmx-host='$DOMAIN','$HOSTNAME',0\naddress=/'$HOSTNAME'/'$MYIP'\n' | sudo tee -a /etc/dnsmasq.conf >/dev/null
 # restart dns services
@@ -56,7 +56,7 @@ DOCREATEADMIN="yes"
 DOCREATEDOMAIN="yes"
 DOTRAINSA="yes"
 EXPANDMENU="no"
-HOSTNAME="$HOSTNAME.$DOMAIN"
+HOSTNAME="$HOSTNAME"
 HTTPPORT="8080"
 HTTPPROXY="TRUE"
 HTTPPROXYPORT="80"
@@ -75,7 +75,7 @@ LDAPADMINPASS="$MYPASSWORD"
 LDAPREPPASS="$MYPASSWORD"
 LDAPBESSEARCHSET="set"
 LDAPDEFAULTSLOADED="1"
-LDAPHOST="$HOSTNAME.$DOMAIN"
+LDAPHOST="$HOSTNAME"
 LDAPPORT="389"
 LDAPREPLICATIONTYPE="master"
 LDAPSERVERID="2"
@@ -97,12 +97,12 @@ RUNSA="yes"
 RUNVMHA="no"
 SERVICEWEBAPP="yes"
 SMTPDEST="admin@$DOMAIN"
-SMTPHOST="$HOSTNAME.$DOMAIN"
+SMTPHOST="$HOSTNAME"
 SMTPNOTIFY="yes"
 SMTPSOURCE="admin@$DOMAIN"
 SNMPNOTIFY="yes"
-SNMPTRAPHOST="$HOSTNAME.$DOMAIN"
-SPELLURL="http://$HOSTNAME.$DOMAIN:7780/aspell.php"
+SNMPTRAPHOST="$HOSTNAME"
+SPELLURL="http://$HOSTNAME:7780/aspell.php"
 STARTSERVERS="yes"
 SYSTEMMEMORY="3.8"
 TRAINSAHAM="ham.account@$DOMAIN"
@@ -117,7 +117,7 @@ ZIMBRA_REQ_SECURITY="yes"
 ldap_bes_searcher_password="$MYPASSWORD"
 ldap_dit_base_dn_config="cn=zimbra"
 ldap_nginx_password="$MYPASSWORD"
-ldap_url="ldap://$HOSTNAME.$DOMAIN:389"
+ldap_url="ldap://$HOSTNAME:389"
 mailboxd_directory="/opt/zimbra/mailboxd"
 mailboxd_keystore="/opt/zimbra/mailboxd/etc/keystore"
 mailboxd_keystore_password="$MYPASSWORD"
@@ -146,7 +146,7 @@ zimbraVersionCheckSendNotifications="TRUE"
 zimbraWebProxy="FALSE"
 zimbra_ldap_userdn="uid=zimbra,cn=admins,cn=zimbra"
 zimbra_require_interprocess_security="1"
-zimbra_server_hostname="$HOSTNAME.$DOMAIN"
+zimbra_server_hostname="$HOSTNAME"
 INSTALL_PACKAGES="zimbra-core zimbra-ldap zimbra-logger zimbra-mta zimbra-snmp zimbra-store zimbra-apache zimbra-spell zimbra-memcached zimbra-proxy"
 EOF
 
