@@ -6,3 +6,4 @@ TODO:
 - Get hostname and domain information (no hard-coding)
 - Get proper timezone
 - Check for different Ubuntu versions
+- Add check for Open Source or Network Trial
