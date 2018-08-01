@@ -194,11 +194,13 @@
         "type": "CustomScript",
         "typeHandlerVersion": "2.0",
         "autoUpgradeMinorVersion": true,
-        "settings": {
+         "settings": {
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), '/scripts/hello.sh >> /tmp/hello.txt')]"
-          ],
-          "commandToExecute": "[parameters('commandToExecute')]"
+            "https://raw.githubusercontent.com/zdocs/auto-install/master/z-on-a/scripts/hello.sh"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('sh hello.sh ')]"
         }
       }
     }
