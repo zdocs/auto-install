@@ -194,12 +194,14 @@
         "type": "CustomScript",
         "typeHandlerVersion": "2.0",
         "autoUpgradeMinorVersion": true,
-         "settings": {
+        "settings": {
           "fileUris": [
-            "https://raw.githubusercontent.com/zdocs/auto-install/master/z-on-a/scripts/install_zimbra.sh"
+            "[variables('installScriptUri')]"
           ]
         },
-        "commandToExecute": "[concat('bash install_zimbra.sh ')]"
+        "protectedSettings": {
+          "commandToExecute": "[variables('installCommand')]"
+        }
       }
     }
   ]
