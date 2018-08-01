@@ -36,7 +36,7 @@
         "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
       }
     },
-        "_artifactsLocation": {
+    "_artifactsLocation": {
       "defaultValue": "https://raw.githubusercontent.com/zdocs/master/z-on-a/",
       "type": "string",
       "metadata": {
