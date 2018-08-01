@@ -7,3 +7,9 @@ TODO:
 - Get proper timezone
 - Check for different Ubuntu versions
 - Add check for Open Source or Network Trial
+
+
+# Azure Auto-Deploy
+## blah blah
+
+stuff to add here!
