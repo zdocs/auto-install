@@ -2,94 +2,105 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "storageAccountNamePrefix": {
+    "vmSize": {
       "type": "string",
-      "maxLength": 11,
+      "allowedValues": [
+        "Standard_A1",
+        "Standard_A2",
+        "Standard_A3",
+        "Standard_A4",
+        "Standard_D1",
+        "Standard_D2",
+        "Standard_D3",
+        "Standard_D4"
+      ],
       "metadata": {
-        "description": "Name prefix of the Storage Account"
+        "description": "Size of vm"
       }
     },
-    "adminUsername": {
+    "username": {
       "type": "string",
       "metadata": {
-        "description": "User name for the Virtual Machine."
+        "description": "Username for the Virtual Machine."
       }
     },
-    "adminPassword": {
+    "password": {
       "type": "securestring",
       "metadata": {
         "description": "Password for the Virtual Machine."
       }
     },
-    "dnsLabelPrefix": {
+    "dnsNameForPublicIP": {
       "type": "string",
       "metadata": {
-        "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
       }
     },
-    "ubuntuOSVersion": {
+    "_artifactsLocation": {
+      "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-customscript-extension-public-storage-on-ubuntu",
       "type": "string",
-      "defaultValue": "14.04.2-LTS",
-      "allowedValues": [
-        "12.04.5-LTS",
-        "14.04.2-LTS",
-        "15.10"
-      ],
       "metadata": {
-        "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version. Allowed values: 12.04.5-LTS, 14.04.2-LTS, 16.04.4-LTS."
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "defaultValue": "",
+      "type": "securestring",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      }
+    },
+    "commandToExecute": {
+      "type": "string",
+      "metadata": {
+        "description": "The command to execute."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
       }
     }
   },
   "variables": {
+    "scenarioPrefix": "customscriptLinux",
     "imagePublisher": "Canonical",
     "imageOffer": "UbuntuServer",
-    "OSDiskName": "osdiskforlinuxsimple",
-    "nicName": "myVMNic",
-    "addressPrefix": "10.0.0.0/16",
-    "subnetName": "Subnet",
+    "ubuntuOSVersion": "14.04.2-LTS",
+    "nicName": "[concat(variables('scenarioPrefix'),'Nic')]",
+    "vnetAddressPrefix": "10.0.0.0/16",
+    "subnetName": "[concat(variables('scenarioPrefix'),'Subnet')]",
     "subnetPrefix": "10.0.0.0/24",
-    "storageAccountType": "Standard_LRS",
-    "publicIPAddressName": "myPublicIP",
+    "publicIPAddressName": "[concat(variables('scenarioPrefix'),'PublicIp')]",
     "publicIPAddressType": "Dynamic",
-    "vmStorageAccountContainerName": "vhds",
-    "vmName": "MyUbuntuVM",
-    "vmSize": "Standard_A2",
-    "virtualNetworkName": "MyVNET",
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
-    "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
-    "apiVersion": "2015-06-15"
+    "vmName": "[concat(variables('scenarioPrefix'),'VM')]",
+    "virtualNetworkName": "[concat(variables('scenarioPrefix'),'Vnet')]",
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
   },
   "resources": [
     {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Storage/storageAccounts",
-      "name": "[parameters('storageAccountNamePrefix')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "accountType": "[variables('storageAccountType')]"
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
-          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+          "domainNameLabel": "[parameters('dnsNameForPublicIP')]"
         }
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
-            "[variables('addressPrefix')]"
+            "[variables('vnetAddressPrefix')]"
           ]
         },
         "subnets": [
@@ -103,10 +114,10 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('nicName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -129,35 +140,30 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountNamePrefix'))]",
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[variables('vmSize')]"
+          "vmSize": "[parameters('vmSize')]"
         },
         "osProfile": {
           "computerName": "[variables('vmName')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
+          "adminUsername": "[parameters('username')]",
+          "adminPassword": "[parameters('password')]"
         },
         "storageProfile": {
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
             "offer": "[variables('imageOffer')]",
-            "sku": "[parameters('ubuntuOSVersion')]",
+            "sku": "[variables('ubuntuOSVersion')]",
             "version": "latest"
           },
           "osDisk": {
-            "name": "osdisk",
-            "vhd": {
-              "uri": "[concat('http://',parameters('storageAccountNamePrefix'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),'.vhd')]"
-            },
             "caching": "ReadWrite",
             "createOption": "FromImage"
           }
@@ -173,9 +179,9 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),'/newuserscript')]",
-      "apiVersion": "2015-06-15",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('vmName'),'/installcustomscript')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
       ],
@@ -186,11 +192,9 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "https://raw.githubusercontent.com/zdocs/auto-install/master/scripts/install_zcs.sh"
-          ]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('sh 2_inst_zcs.sh')]"
+            "[concat(parameters('_artifactsLocation'), '/scripts/hello.sh')]"
+          ],
+          "commandToExecute": "[parameters('commandToExecute')]"
         }
       }
     }
