@@ -6,14 +6,10 @@
       "type": "string",
       "defaultValue": "Standard_A2",
       "allowedValues": [
-        "Standard_A1",
         "Standard_A2",
         "Standard_A3",
-        "Standard_A4",
-        "Standard_D1",
         "Standard_D2",
         "Standard_D3",
-        "Standard_D4"
       ],
       "metadata": {
         "description": "Size of vm"
@@ -81,7 +77,11 @@
     "publicIPAddressType": "Dynamic",
     "vmName": "[concat(variables('scenarioPrefix'),'VM')]",
     "virtualNetworkName": "[concat(variables('scenarioPrefix'),'Vnet')]",
-    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+    "installScriptName": "install_zimbra.sh",
+    "fileUriBase": "https://raw.githubusercontent.com/zdocs/auto-install/master/z-on-a/",
+    "installScriptUri": "[concat(variables('fileUriBase'), variables('installScriptName'))]",
+    "installCommand": "[concat('sh ', variables('installScriptName'))]"
   },
   "resources": [
     {
@@ -196,10 +196,10 @@
         "autoUpgradeMinorVersion": true,
          "settings": {
           "fileUris": [
-            "https://raw.githubusercontent.com/zdocs/auto-install/master/z-on-a/scripts/hello.sh"
+            "https://raw.githubusercontent.com/zdocs/auto-install/master/z-on-a/scripts/install_zimbra.sh"
           ]
         },
-        "commandToExecute": "[concat('sh hello.sh ')]"
+        "commandToExecute": "[concat('bash install_zimbra.sh ')]"
       }
     }
   ]
