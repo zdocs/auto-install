@@ -172,7 +172,9 @@
             "[variables('installScriptUri')]"
           ]
         },
-          "commandToExecute": "[variables('installCommand')]"
+        "protectedSettings": {
+         "commandToExecute": "[variables('installCommand')]"
+       }
       }
     }
   ]
