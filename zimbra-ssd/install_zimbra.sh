@@ -161,6 +161,3 @@ cd /tmp/zcs/zcs-* && sudo ./install.sh -s < /tmp/zcs/installZimbra-keystrokes
 echo "Installing Zimbra Collaboration and injecting the configuration"
 sudo /opt/zimbra/libexec/zmsetup.pl -c /tmp/zcs/installZimbraScript
 sleep 5
-
-/opt/zimbra/libexec/zmsyslogsetup > /dev/null
-systemctl restart rsyslog.service
