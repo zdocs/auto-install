@@ -11,6 +11,5 @@ This template uses the Azure Linux [CustomScript Extension](https://github.com/A
 
 - Creates an Ubuntu VM (16.04)
 - Silent install of Zimbra Open Source Edition - v8.8.9
-
-TODO:
-- Network Edition option
+- Domain is set to mail.lab
+- Internal hostname set to zimbra.mail.lab with dnsmasq

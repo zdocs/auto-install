@@ -7,13 +7,11 @@
       "defaultValue": "Standard_D2s_v3",
       "allowedValues": [
         "Standard_A2",
-        "Standard_A3",
         "Standard_D2",
-        "Standard_D3",
         "Standard_D2s_v3"
       ],
       "metadata": {
-        "description": "Size of vm"
+        "description": "VM Size. D2s - 2vcpu/8GB/SSD. A2/D2 - No SSD"
       }
     },
     "username": {
@@ -32,7 +30,7 @@
     },
     "dnsNameForPublicIP": {
       "type": "string",
-      "defaultValue": "testzimbra12",
+      "defaultValue": "poc02",
       "metadata": {
         "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
       }
@@ -57,7 +55,6 @@
     }
   },
   "variables": {
-    "dataDiskSize":1024,
     "scenarioPrefix": "CustomZCS",
     "imagePublisher": "Canonical",
     "imageOffer": "UbuntuServer",
@@ -71,7 +68,7 @@
     "vmName": "[concat(variables('scenarioPrefix'),'VM')]",
     "virtualNetworkName": "[concat(variables('scenarioPrefix'),'Vnet')]",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
-    "installScriptName": "echo 1234567890",
+    "installScriptName": "install_zimbra.sh",
     "fileUriBase": "https://raw.githubusercontent.com/zdocs/auto-install/master/zimbra-ssd/",
     "installScriptUri": "[concat(variables('fileUriBase'), variables('installScriptName'))]",
     "installCommand": "[concat('sh ', variables('installScriptName'))]"

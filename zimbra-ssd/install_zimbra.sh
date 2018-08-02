@@ -6,34 +6,21 @@ DOMAIN="mail.lab"
 HOSTNAME="zimbra.mail.lab"
 
 # Reset the hosts file
-echo -e "\e[38;5;87mFixing the hosts file."
-echo -e "\e[38;5;82m ... create a copy of the old hosts file."
 mv /etc/hosts /etc/hosts.old
-
-echo -e "\e[38;5;82m ... write a new hosts file."
 printf '127.0.0.1\tlocalhost.localdomain\tlocalhost\n127.0.1.1\tubuntu\n'$MYIP'\t'$HOSTNAME'\tzimbra\t'$(hostname) | sudo tee -a /etc/hosts >/dev/null 2>&1
-
-echo -e "\e[38;5;87mSetting hostname to $HOSTNAME."
 hostnamectl set-hostname $HOSTNAME >/dev/null 2>&1
-
-echo -e "\e[38;5;87mSetting timezone to Singapore."
 timedatectl set-timezone Asia/Singapore >/dev/null 2>&1
 #timedatectl set-timezone Asia/Bangkok >/dev/null 2>&1
 #timedatectl set-timezone Asia/Yangon >/dev/null 2>&1
-
-echo -e "\e[38;5;87mUpdate package repo."
 apt-get -qq update
 
 #Install a DNS Server
-echo -e "\e[38;5;87mInstalling dnsmasq DNS Server"
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq -y dnsmasq < /dev/null > /dev/null
-echo -e "\e[38;5;82m ... Configuring DNS Server (/etc/dnsmasq.conf)"
 sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.old
 #create the conf file
 printf 'server=8.8.8.8\nlisten-address=127.0.0.1\ndomain='$DOMAIN'\nmx-host='$DOMAIN','$HOSTNAME',0\naddress=/'$HOSTNAME'/'$MYIP'\n' | sudo tee -a /etc/dnsmasq.conf >/dev/null
 # restart dns services
 sudo systemctl restart dnsmasq.service
-echo -e "\e[0m"
 
 ##Preparing the config files to inject
 mkdir /tmp/zcs && cd /tmp/zcs
@@ -150,7 +137,6 @@ zimbra_server_hostname="$HOSTNAME"
 INSTALL_PACKAGES="zimbra-core zimbra-ldap zimbra-logger zimbra-mta zimbra-snmp zimbra-store zimbra-apache zimbra-spell zimbra-memcached zimbra-proxy"
 EOF
 
-echo "Creating the auto-install keystrokes"
 touch /tmp/zcs/installZimbra-keystrokes
 cat <<EOF >/tmp/zcs/installZimbra-keystrokes
 y
@@ -171,22 +157,10 @@ y
 y
 EOF
 
-echo "Installing Zimbra Collaboration just the Software"
 cd /tmp/zcs/zcs-* && sudo ./install.sh -s < /tmp/zcs/installZimbra-keystrokes
-#echo "Copy license file"
-#cp /tmp/zcs/ZCSLicense.xml /opt/zimbra/conf/
 echo "Installing Zimbra Collaboration and injecting the configuration"
 sudo /opt/zimbra/libexec/zmsetup.pl -c /tmp/zcs/installZimbraScript
 sleep 5
-#sudo su - zimbra -c 'zmcontrol restart'
-echo -e ""
-echo -e "\e[1mYou can now access your Zimbra Collaboration Server ..."
-echo -e "Admin Console: \e[30;48;5;82m https://"$MYIP":7071 \e[0m"
-echo -e "Web Client: \e[30;48;5;82m https://"$MYIP" \e[0m"
-echo -e "Use the actual public IP if this is being hosted in AWS!"
-echo -e "\e[0m"
 
-sleep 2
-echo "Restarting syslog services ..."
 /opt/zimbra/libexec/zmsyslogsetup > /dev/null
 systemctl restart rsyslog.service
