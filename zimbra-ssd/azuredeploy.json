@@ -6,12 +6,12 @@
       "type": "string",
       "defaultValue": "Standard_D2s_v3",
       "allowedValues": [
-        "Standard_A2",
+        "Standard_A2_v2",
         "Standard_D2",
         "Standard_D2s_v3"
       ],
       "metadata": {
-        "description": "VM Size. D2s - 2vcpu/8GB/SSD. A2/D2 - No SSD"
+        "description": "VM Size. D2s-2vcpu/8GB/SSD. A2-2vcpu/4GB/HDD D2-2vCPU/7GB/HDD"
       }
     },
     "username": {
