@@ -2,16 +2,15 @@
 
 MYIP=$(hostname -I | cut -f1 -d" " | tr -d '[:space:]')
 MYPASSWORD="Zimbra2018@"
-DOMAIN="mail.lab"
-HOSTNAME="zimbra.mail.lab"
+DOMAIN=$3
+HOSTNAME=$2"."$3
+DEPLOY=$1
 
 # Reset the hosts file
 mv /etc/hosts /etc/hosts.old
 printf '127.0.0.1\tlocalhost.localdomain\tlocalhost\n127.0.1.1\tubuntu\n'$MYIP'\t'$HOSTNAME'\tzimbra\t'$(hostname) | sudo tee -a /etc/hosts >/dev/null 2>&1
 hostnamectl set-hostname $HOSTNAME >/dev/null 2>&1
 timedatectl set-timezone Asia/Singapore >/dev/null 2>&1
-#timedatectl set-timezone Asia/Bangkok >/dev/null 2>&1
-#timedatectl set-timezone Asia/Yangon >/dev/null 2>&1
 apt-get -qq update
 
 #Install a DNS Server
@@ -26,8 +25,12 @@ sudo systemctl restart dnsmasq.service
 mkdir /tmp/zcs && cd /tmp/zcs
 
 ##Download the Zimbra binaries
-echo "Downloading Zimbra OSE 8.8.9 for Ubuntu 16.04"
-wget -P /tmp/ https://files.zimbra.com/downloads/8.8.9_GA/zcs-8.8.9_GA_2055.UBUNTU16_64.20180703080917.tgz > /dev/null 2>&1
+echo "Downloading Zimbra 8.8.9 for Ubuntu 16.04"
+if [[ $DEPLOY == "Network" ]]; then
+  wget -P /tmp/ https://files.zimbra.com/downloads/8.8.9_GA/zcs-NETWORK-8.8.9_GA_2055.UBUNTU16_64.20180703080917.tgz > /dev/null 2>&1
+else
+  wget -P /tmp/ https://files.zimbra.com/downloads/8.8.9_GA/zcs-8.8.9_GA_2055.UBUNTU16_64.20180703080917.tgz > /dev/null 2>&1
+fi
 echo " ... Extracting the files"
 tar xzf /tmp/zcs-8.8.9*.tgz
 
@@ -138,6 +141,30 @@ INSTALL_PACKAGES="zimbra-core zimbra-ldap zimbra-logger zimbra-mta zimbra-snmp z
 EOF
 
 touch /tmp/zcs/installZimbra-keystrokes
+if [[ $DEPLOY == "Network" ]]; then
+cat <<EOF >/tmp/zcs/installZimbra-keystrokes
+y
+y
+y
+y
+y
+y
+n
+y
+y
+y
+y
+y
+y
+y
+n
+y
+n
+y
+y
+y
+EOF
+else
 cat <<EOF >/tmp/zcs/installZimbra-keystrokes
 y
 y
@@ -156,8 +183,18 @@ n
 y
 y
 EOF
+fi
 
-cd /tmp/zcs/zcs-* && sudo ./install.sh -s < /tmp/zcs/installZimbra-keystrokes
+if [[ $DEPLOY == "Network" ]]; then
+  wget --no-check-certificate --no-proxy -O /tmp/zcs/ZCSLicense.xml "https://license.zimbra.com/zimbraLicensePortal/public/STLicense?IssuedToName=MyCompany&IssuedToEmail=noone@$3"
+  cd /tmp/zcs/zcs-* && sudo ./install.sh -l /tmp/zcs/ZCSLicense.xml -s < /tmp/zcs/installZimbra-keystrokes
+else
+  cd /tmp/zcs/zcs-* && sudo ./install.sh -s < /tmp/zcs/installZimbra-keystrokes
+fi
+
 echo "Installing Zimbra Collaboration and injecting the configuration"
 sudo /opt/zimbra/libexec/zmsetup.pl -c /tmp/zcs/installZimbraScript
-sleep 5
+sleep 10
+if [[ $DEPLOY == "Network" ]]; then
+  su - zimbra -c "zmlicense -a"
+fi

@@ -91,8 +91,7 @@
     "installScriptUri": "[concat(variables('fileUriBase'), variables('installScriptName'))]",
     "installCommand": "[concat('bash ', variables('installScriptName'),' ',parameters('installType'),' ',parameters('dnsNameForPublicIP'),' ',parameters('domain'))]"
   },
-  "resources": [
-    {
+  "resources": [{
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
@@ -115,14 +114,12 @@
             "[variables('vnetAddressPrefix')]"
           ]
         },
-        "subnets": [
-          {
-            "name": "[variables('subnetName')]",
-            "properties": {
-              "addressPrefix": "[variables('subnetPrefix')]"
-            }
+        "subnets": [{
+          "name": "[variables('subnetName')]",
+          "properties": {
+            "addressPrefix": "[variables('subnetPrefix')]"
           }
-        ]
+        }]
       }
     },
     {
@@ -135,20 +132,18 @@
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-              },
-              "subnet": {
-                "id": "[variables('subnetRef')]"
-              }
+        "ipConfigurations": [{
+          "name": "ipconfig1",
+          "properties": {
+            "privateIPAllocationMethod": "Dynamic",
+            "publicIPAddress": {
+              "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+            },
+            "subnet": {
+              "id": "[variables('subnetRef')]"
             }
           }
-        ]
+        }]
       }
     },
     {
@@ -184,11 +179,9 @@
           }
         },
         "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
-            }
-          ]
+          "networkInterfaces": [{
+            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+          }]
         }
       }
     },
@@ -211,8 +204,8 @@
           ]
         },
         "protectedSettings": {
-         "commandToExecute": "[variables('installCommand')]"
-       }
+          "commandToExecute": "[variables('installCommand')]"
+        }
       }
     }
   ]
