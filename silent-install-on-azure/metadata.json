@@ -1,0 +1,8 @@
+{
+  "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+  "itemDisplayName": "Zimbra Install on Ubuntu VM",
+  "description": "This template creates a Ubuntu VM and installs Zimbra using the CustomScript extension",
+  "summary": "This template creates a Ubuntu VM and installs Zimbra using the CustomScript extension",
+  "githubUsername": "gautam",
+  "dateUpdated": "2018-09-01"
+}
