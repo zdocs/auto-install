@@ -39,14 +39,13 @@
     },
     "diskType": {
       "type": "string",
-      "defaultValue": "StandardSSD_LRS",
+      "defaultValue": "Premium_LRS",
       "allowedValues": [
         "Premium_LRS",
-        "StandardSSD_LRS",
         "Standard_LRS"
       ],
       "metadata": {
-        "description": "Type of storage:Premium (SSD) or Standard"
+        "description": "Type of storage:Premium (SSD) or Standard (HDD)"
       }
     },
     "location": {
