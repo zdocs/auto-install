@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MYIP=$(hostname -I | cut -f1 -d" " | tr -d '[:space:]')
-MYPASSWORD="Zimbra2018@"
+MYPASSWORD="MyZimbra@@"
 DOMAIN="mail.local"
 HOSTNAME="zimbra.mail.local"
 
